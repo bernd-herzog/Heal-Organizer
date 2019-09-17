@@ -174,8 +174,8 @@ function HealOrganizer:OnInitialize() -- {{{
     StaticPopupDialogs["HEALORGANIZER_EDITLABEL"] =
     { --{{{
         text = L["EDIT_LABEL"],
-        button1 = TEXT(SAVE),
-        button2 = TEXT(CANCEL),
+        button1 = "Save", --TEXT(SAVE),
+        button2 = "Cancel", --TEXT(CANCEL),
         OnAccept = function(frame)
             -- button gedrueckt, auf GetName/GetParent achten
             self:Debug("accept gedrueckt")
@@ -206,8 +206,8 @@ function HealOrganizer:OnInitialize() -- {{{
     StaticPopupDialogs["HEALORGANIZER_SETSAVEAS"] = 
     { --{{{
         text = L["SET_SAVEAS"],
-        button1 = TEXT(SAVE),
-        button2 = TEXT(CANCEL),
+        button1 = "Save", --TEXT(SAVE),
+        button2 = "Cancel", --TEXT(CANCEL),
         OnAccept = function(frame)
             -- button gedrueckt, auf GetName/GetParent achten
             self:SetSaveAs(_G[frame:GetName().."EditBox"]:GetText())
@@ -263,9 +263,9 @@ function HealOrganizer:OnInitialize() -- {{{
                                                           RAID_CLASS_COLORS["SHAMAN"].b)
     HealOrganizerDialogEinteilungRestActionRest:SetText(L["REMAINS"])
     HealOrganizerDialogEinteilungSetsTitle:SetText(L["LABELS"])
-    HealOrganizerDialogEinteilungSetsSave:SetText(TEXT(SAVE))
+    HealOrganizerDialogEinteilungSetsSave:SetText("Save") --TEXT(SAVE))
     HealOrganizerDialogEinteilungSetsSaveAs:SetText(L["SAVEAS"])
-    HealOrganizerDialogEinteilungSetsDelete:SetText(TEXT(DELETE))
+    HealOrganizerDialogEinteilungSetsDelete:SetText("Delete") --TEXT(DELETE))
     HealOrganizerDialogBroadcastTitle:SetText(L["BROADCAST"])
     HealOrganizerDialogBroadcastChannel:SetText(L["CHANNEL"])
     HealOrganizerDialogBroadcastRaid:SetText(L["RAID"])
@@ -466,7 +466,7 @@ end -- }}}
 
 function HealOrganizer:Dialog() -- {{{
     -- bei einem leeren raid die heilerzuteilung loeschen
-    if GetNumRaidMembers() == 0 then
+    if GetNumGroupMembers() == 0 then
         self:ResetData()
     end
     self:UpdateDialogValues()
@@ -675,7 +675,7 @@ end -- }}}
 function HealOrganizer:BroadcastChan() --{{{
     self:Debug("BroadcastChan: broadcasting...")
     -- bin ich im chan?
-    if GetNumRaidMembers() == 0 then
+    if GetNumGroupMembers() == 0 then
         self:ErrorMessage(L["NOT_IN_RAID"])
         return;
     end
@@ -695,7 +695,7 @@ end -- }}}
 
 function HealOrganizer:BroadcastRaid() -- {{{
     self:Debug("BroadcastRaid: broadcasting...")
-    if GetNumRaidMembers() == 0 then
+    if GetNumGroupMembers() == 0 then
         self:ErrorMessage(L["NOT_IN_RAID"])
         return;
     end
@@ -1097,7 +1097,8 @@ end -- }}}
 function HealOrganizer:CHAT_MSG_WHISPER( ... ) -- {{{
     local msg = select(2, ...);
     local user = select(3, ...);
-    if GetNumRaidMembers() == 0 then
+    user, server = strsplit("-", user);
+    if GetNumGroupMembers() == 0 then
         -- bin nicht im raid, also auch keine zuteilung
         return
     end
